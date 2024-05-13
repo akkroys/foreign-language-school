@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Записаться к репетитору</title>
+    <link rel="stylesheet" href="/css/userBookLesson.css">
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="navigation">
+            <img src="/resources/лого.png" alt="Лого" style="width: 100%; margin-bottom: 20px;">
+            <ul>
+                <li><a href="/dashboard">Расписание</a></li>
+                <li><a href="#">Чаты</a></li>
+                <li><a href="/user/tutors">Репетиторы</a></li>
+                <li><a href="/user/balance">Баланс</a></li>
+                <li><a href="/user/tariffs">Тарифы</a></li>
+            </ul>
+        </div>
+
+        <div class="tutor-schedule-page">
+            <h1>Расписание: <%= tutor.firstName %>
+                    <%= tutor.lastName %>
+            </h1>
+
+            <ul class="schedule-list">
+                <% if (freeSlots && freeSlots.length> 0) { %>
+                    <% freeSlots.forEach(slot=> { %>
+                        <li class="schedule-item">
+                            <strong>
+                                <%= slot.startDate %> - <%= slot.endDate %>
+                            </strong>
+                            <button class="action-btn" onclick="confirmBooking('<%= slot.id %>')">Записаться</button>
+                        </li>
+                        <% }); %>
+                            <% } else { %>
+                                <p>Нет доступных слотов в расписании.</p>
+                                <% } %>
+            </ul>
+        </div>
+
+        <div class="user-profile">
+            <% const profilePhoto=user.photo ? user.photo : '/resources/user.png' ; %>
+                <img src="<%= profilePhoto %>" alt="Фото профиля" class="profile-img">
+                <div class="user-info">
+                    <span class="user-name">
+                        <%= user.firstName %>
+                            <%= user.lastName %>
+                    </span>
+                    <a href="/profile" class="profile-link">Мой профиль</a>
+                    <a href="/logout" class="logout-button">Выход</a>
+                </div>
+        </div>
+
+        <div id="bookingModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <p>Вы хотите записаться к репетитору на это время?</p>
+                <button onclick="bookLesson()">Да</button>
+                <button onclick="closeModal()">Нет</button>
+            </div>
+        </div>
+
+        <script>
+            let selectedSlotId;
+
+            function confirmBooking(slotId) {
+                selectedSlotId = slotId;
+                document.getElementById("bookingModal").style.display = "block";
+            }
+
+            function closeModal() {
+                selectedSlotId = null;
+                document.getElementById("bookingModal").style.display = "none";
+            }
+
+            function bookLesson() {
+                if (!selectedSlotId) {
+                    console.error("Нет выбранного слота.");
+                    return;
+                }
+
+                fetch('/user/tutors/book-lesson', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ slotId: selectedSlotId })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            console.error("Ошибка при бронировании:", data.message);
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Ошибка при бронировании:", err);
+                    });
+            }
+        </script>
+    </div>
+</body>
+
+</html>

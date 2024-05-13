@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Курсы</title>
+    <link rel="stylesheet" href="/css/userCoursesStyles.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="navigation">
+            <img src="/resources/лого.png" alt="Лого" style="width: 100%; margin-bottom: 20px;">
+            <ul>
+                <li><a href="/dashboard">Расписание</a></li>
+                <li><a href="#">Чаты</a></li>
+                <li><a href="/user/tutors">Репетиторы</a></li>
+                <li><a href="/user/balance">Баланс</a></li>
+                <li><a href="/user/tariffs">Тарифы</a></li>
+            </ul>
+        </div>
+
+        <div class="course-page">
+            <h1>Доступные курсы</h1>
+            <ul>
+                <% courses.forEach(course => { %>
+                    <li>
+                        <strong><%= course.title %></strong>
+                        <button onclick="showRegistrationModal(<%= course.id %>)">Записаться</button>
+                    </li>
+                <% }); %>
+            </ul>
+        </div>
+
+        <div id="registrationModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <p>Выберите курс:</p>
+                <select id="courseSelect">
+                    <% courses.forEach(course => { %>
+                        <option value="<%= course.id %>"><%= course.title %></option>
+                    <% }); %>
+                </select>
+                <button onclick="registerForCourse()">Зарегистрироваться</button>
+            </div>
+        </div>
+
+        <div class="user-profile">
+            <% const profilePhoto=user.photo ? user.photo : '/resources/user.png' ; %>
+                <img src="<%= profilePhoto %>" alt="User Profile Picture" class="profile-img">
+                <div class="user-info">
+                    <span class="user-name">
+                        <%= user.firstName %>
+                            <%= user.lastName %>
+                    </span>
+
+                    <a href="/profile" class="profile-link">Мой профиль</a>
+
+                    <a href="/logout" class="logout-button">Выход</a>
+
+                    <div class="notifications">
+                        <span class="notification-icon"></span>
+                    </div>
+                </div>
+        </div>
+
+        <script>
+            function showRegistrationModal(courseId) {
+                const modal = document.getElementById("registrationModal");
+                modal.style.display = "block";
+                document.getElementById("courseSelect").value = courseId;
+            }
+
+            function closeModal() {
+                const modal = document.getElementById("registrationModal");
+                modal.style.display = "none";
+            }
+
+            function registerForCourse() {
+                const courseId = document.getElementById("courseSelect").value;
+
+                fetch('/user/courses/register-course', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ courseId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Запись успешна:", data);
+                    closeModal();
+                    location.reload();
+                })
+                .catch(err => {
+                    console.error("Ошибка при регистрации на курс:", err);
+                });
+            }
+        </script>
+    </div>
+</body>
+</html>

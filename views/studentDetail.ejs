@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/studentDetail.css">
+    <title>Информация об ученике</title>
+</head>
+<body>
+    <div class="container">
+        <h1><%= student.firstName %> <%= student.lastName %></h1>
+        <p>Почта: <%= student.email %></p>
+        <p>id: <%= student.id %></p>
+        <p>Пожелание: <%= student.wish %></p>
+        <p>Количество занятий: <%= student.lessonsCount %></p>
+        <p>Оплаченные занятия: <%= student.startWithPayment ? 'Да' : 'Нет' %></p>
+        <p>Пропущенные занятия в этом месяце: <%= student.skippedInThisMonth %></p>
+
+        <form action="/admin/students/<%= student.id %>/promote" method="POST">
+            <button type="submit">Сделать репетитором</button>
+        </form>
+    </div>
+</body>
+</html>

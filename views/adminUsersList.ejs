@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/usersList.css">
+  <title>Список учеников</title>
+</head>
+
+<body>
+  <div class="adm-u-container">
+    <div class="navigation">
+      <img src="/resources/лого.png" alt="" style="width: 100%; margin-bottom: 20px;">
+      <ul>
+        <li><a href="/dashboard">Управление школой</a></li>
+        <li><a href="#">Чаты</a></li>
+        <li><a href="/admin/courses">Курсы</a></li>
+        <li><a href="/admin/tutors">Репетиторы</a></li>
+        <li><a href="/admin/students">Ученики</a></ли>
+        <li><a href="#">Баланс</a></li>
+      </ul>
+    </div>
+    <div class="content-area">
+      <div class="search-container">
+        <form action="/admin/students/search" method="get" class="search-form">
+          <input type="text" name="searchQuery" placeholder="Введите имя, фамилию или почту" class="search-input"
+            required>
+          <button type="submit" class="search-button">Поиск</button>
+        </form>
+      </div>
+      <div class="user-list">
+        <% users.forEach(function(user) { %>
+          <div class="user-card">
+            <img src=" <%= user.photo ? user.photo : '/resources/user.png' %>" alt="User Photo" class="user-photo">
+
+            <h3>
+              <%= user.firstName %>
+                <%= user.lastName %>
+            </h3>
+
+            <p>
+              <%= user.email %>
+            </p>
+
+            <a href="/admin/students/<%= user.id %>">Подробнее</a>
+          </div>
+          <% }); %>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

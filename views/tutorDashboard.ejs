@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor Dashboard</title>
+    <link rel="stylesheet" href="/css/dashboardStyles.css">
+    <script src="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.js" charset="utf-8"></script>
+    <link href="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.css" rel="stylesheet" type="text/css"
+        charset="utf-8">
+</head>
+
+<body>
+
+    <div class="navigation">
+        <img src="./resources/лого.png" alt="" style="width: 100%; margin-bottom: 20px;">
+        <ul>
+            <li><a href="/dashboard">Расписание</a></li>
+            <li><a href="/tutor/chats">Чаты</a></li>
+            <li><a href="#">Ученики</a></li>
+            <li><a href="#">Баланс</a></li>
+        </ul>
+    </div>
+
+    <div class="calendar" style="height: 165vh;">
+        <div class="cal-name">Расписание занятий</div>
+        <div id="scheduler_here" class="dhx_cal_container" style="height: 160vh;">
+            <div class="dhx_cal_navline">
+                <div class="dhx_cal_prev_button" style="height: 100%;">&nbsp;</div>
+                <div class="dhx_cal_next_button" style="height: 100%;">&nbsp;</div>
+                <div class="dhx_cal_today_button">Сегодня</div>
+                <div class="dhx_cal_date"></div>
+                <div class="dhx_cal_tab" name="day_tab">День</div>
+                <div class="dhx_cal_tab" name="week_tab">Неделя</div>
+                <div class="dhx_cal_tab" name="month_tab">Месяц</div>
+            </div>
+            <div class="dhx_cal_header"></div>
+            <div class="dhx_cal_data"></div>
+        </div>
+        <script>
+            const currentDate = new Date();
+            scheduler.config.load_date = "%Y-%m-%d %H:%i";
+            scheduler.i18n.setLocale("ru");
+            scheduler.init("scheduler_here", currentDate, "week");
+            const schedulesData = <%- JSON.stringify(schedules)%> ;
+            console.log('schedules:', schedulesData);
+
+            try {
+                scheduler.clearAll();
+                scheduler.parse(schedulesData, "json");
+                console.log("Loaded data:", scheduler.getEvents());
+            } catch (error) {
+                console.error("Error during scheduler load:", error);
+            }
+
+            scheduler.attachEvent("onLoadEnd", () => {
+                console.log("Data loaded successfully:", scheduler.getEvents());
+            });
+
+            scheduler.attachEvent("onLoadError", (type, description, data) => {
+                console.error("Error loading data:", type, description, data);
+            });
+
+            const dp = scheduler.createDataProcessor({
+                url: "/tutor/events",
+                mode: "REST",
+                updateFromResponse: true,
+            });
+
+            dp.attachEvent("onAfterUpdate", (id, action, tid, response) => {
+                console.log(`Event updated: ${action} ID: ${tid}`);
+            });
+
+            scheduler.attachEvent("onEventAdded", (event_id, event_object) => {
+                const newEvent = {
+                    start_date: event_object.start_date,
+                    end_date: event_object.end_date,
+                    text: event_object.text,
+                };
+                dp.sendData();
+            });
+
+            scheduler.attachEvent("onEventChanged", (event_id, event_object) => {
+                dp.sendData();
+            });
+
+            scheduler.attachEvent("onEventDeleted", (event_id) => {
+                dp.sendData();
+            });
+        </script>
+    </div>
+
+    <div class="user-profile">
+        <% const profilePhoto=user.photo ? user.photo : '/resources/user.png' ; %>
+            <img src="<%= profilePhoto %>" alt="User Profile Picture" class="profile-img">
+            <div class="user-info">
+                <span class="user-name">
+                    <%= user.firstName %>
+                        <%= user.lastName %>
+                        <!-- <%= schedulesData = JSON.stringify(schedules); %>
+                        <%= console.log('schedules', schedulesData);  %> -->
+                </span>
+
+                <a href="/profile" class="profile-link">Мой профиль</a>
+
+                <a href="/logout" class="logout-button">Выход</a>
+
+                <div class="notifications">
+                    <span class="notification-icon"></span>
+                </div>
+            </div>
+    </div>
+</body>
+
+</html>

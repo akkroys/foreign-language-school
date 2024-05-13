@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тарифы для занятий</title>
+    <link rel="stylesheet" href="/css/tariffs.css">
+    <script>
+        function redirectToBalance() {
+            window.location.href = "/user/balance";
+        }
+    </script>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="navigation">
+            <img src="/resources/лого.png" alt="Лого" style="width: 100%; margin-bottom: 20px;">
+            <ul>
+                <li><a href="/dashboard">Расписание</a></li>
+                <li><a href="#">Чаты</a></li>
+                <li><a href="/user/tutors">Репетиторы</a></li>
+                <li><a href="/user/balance">Баланс</a></li>
+                <li><a href="/user/tariffs">Тарифы</a></li>
+            </ul>
+        </div>
+
+        <div class="tariff-page">
+
+            <p>Количество оплаченных уроков: <%= student.lessonsCount %></p>
+            <p>*Любой из тарифов позволяет получить занятия по любому языку. (1 занятие вне тарифа = 45 рублей)</p>
+            <h2 class="choose-tariff-heading">Выберите ваш тариф</h2>
+
+            <div class="tariff-container">
+                <div class="tariff-block">
+                    <h2>Тариф на 4 занятия</h2>
+                    <p>4 индивидуальных занятия</p>
+                    <p>Стоимость: 160 белорусских рублей</p>
+                    <button class="select-tariff" onclick="redirectToBalance()">Выбрать</button>
+                </div>
+
+                <div class="tariff-block central">
+                    <h2>Тариф на 8 занятий</h2>
+                    <p>8 индивидуальных занятий</p>
+                    <p>
+                        Стоимость: <s>320 белорусских рублей</s>
+                        <strong>300 белорусских рублей</strong>
+                    </p>
+                    <button class="select-tariff" onclick="redirectToBalance()">Выбрать</button>
+                </div>
+
+                <div class="tariff-block">
+                    <h2>Тариф на 16 занятий</h2>
+                    <p>16 индивидуальных занятий</p>
+                    <p>
+                        Стоимость: <s>640 белорусских рублей</s>
+                        <strong>580 белорусских рублей</strong>
+                    </p>
+                    <button class="select-tariff" onclick="redirectToBalance()">Выбрать</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="user-profile">
+            <% const profilePhoto=user.photo ? user.photo : '/resources/user.png' ; %>
+                <img src="<%= profilePhoto %>" alt="User Profile Picture" class="profile-img">
+                <div class="user-info">
+                    <span class="user-name">
+                        <%= user.firstName %>
+                            <%= user.lastName %>
+                    </span>
+
+                    <a href="/profile" class="profile-link">Мой профиль</a>
+
+                    <a href="/logout" class="logout-button">Выход</a>
+
+                    <div class="notifications">
+                        <span class="notification-icon"></span>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

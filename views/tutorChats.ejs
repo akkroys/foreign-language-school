@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="/css/userChats.css">
+    <title>Чаты</title>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="navigation">
+            <img src="/resources/лого.png" alt="Лого" style="width: 100%; margin-bottom: 20px;">
+            <ul>
+                <li><a href="/dashboard">Расписание</a></li>
+                <li><a href="/tutor/chats">Чаты</a></li>
+                <li><a href="#">Ученики</a></li>
+                <li><a href="#">Баланс</a></li>
+            </ul>
+        </div>
+
+        <div class="chat-section">
+            <div class="chat-list">
+                <ul>
+                    <% userChats.forEach(chat=> { %>
+                        <li class="chat-item" data-chat-id="<%= chat.id %>">
+                            <img src="<%= chat.photo || '/resources/user.png' %>" alt="Фото собеседника"
+                                class="chat-user-img">
+                            <div class="chat-info">
+                                <span class="chat-name">
+                                    <%= chat.name %>
+                                </span>
+                            </div>
+                            <span class="chat-time">
+                                <%= chat.lastMessageTime ? chat.lastMessageTime.toISOString().slice(11, 16) : '' %>
+                            </span>
+                        </li>
+                        <% }); %>
+                </ul>
+            </div>
+
+            <div class="chat-content" id="chat-content">
+                <% if (selectedChat) { %>
+                    <div class="chat-messages">
+                        <% if (selectedChat.messages && selectedChat.messages.length> 0) { %>
+                            <% selectedChat.messages.forEach(message=> { %>
+                                <div class="chat-message <%= message.isIncoming ? 'incoming' : 'outgoing' %>">
+                                    <span>
+                                        <%= message.text %>
+                                    </span>
+                                </div>
+                                <% }); %>
+                                    <% } else { %>
+                                        <p>В этом чате пока нет сообщений.</p>
+                                        <% } %>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" placeholder="Написать сообщение..." id="chat-input">
+                        <button id="send-button">Отправить</button>
+                    </div>
+                    <% } else { %>
+                        <p>Выберите чат, чтобы начать переписку.</p>
+                        <% } %>
+            </div>
+        </div>
+
+        <div class="user-profile">
+            <img src="<%= user.photo || '/resources/user.png' %>" alt="Фото профиля" class="profile-img"
+                style="object-fit: contain;">
+            <div class="user-info">
+                <span class="user-name">
+                    <%= user.firstName %>
+                        <%= user.lastName %>
+                </span>
+                <a href="/profile" class="profile-link">Мой профиль</a>
+                <a href="/logout" class="logout-button">Выход</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+
+        document.querySelectorAll('.chat-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const chatId = item.getAttribute('data-chat-id');
+                fetch(`/tutor/chats/${chatId}`)
+                    .then(response => response.json())
+                    .then(chat => {
+                        fetch(`/tutor/chats/${chatId}/messages`)
+                            .then(response => response.json())
+                            .then(messages => {
+                                chat.messages = messages;
+                                const currentUserId = <%= user.id %>;
+                                const otherUserId = chat.inChat === currentUserId ? chat.userId : chat.inChat;
+                                chat.sender = currentUserId;
+                                chat.receiver = otherUserId;
+                                updateChatContent(chat);
+                            })
+                            .catch(error => {
+                                console.error('Ошибка при получении сообщений чата:', error);
+                            });
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при получении данных чата:', error);
+                    });
+            });
+        });
+
+        function updateChatContent(chat) {
+            const chatContent = document.getElementById('chat-content');
+            chatContent.innerHTML = '';
+            const chatMessages = document.createElement('div');
+            chatMessages.className = 'chat-messages';
+
+            if (chat.messages && chat.messages.length > 0) {
+                chat.messages.forEach(message => {
+                    // console.log('message sender', message.senderId);
+                    // console.log('chat sender', chat.sender);
+
+                    const messageDiv = document.createElement('div');
+                    const isOutgoing = message.senderId == chat.sender;
+                    messageDiv.className = `chat-message ${isOutgoing ? 'outgoing' : 'incoming'}`;
+                    messageDiv.innerHTML = `<span>${message.message}</span>`;
+                    chatMessages.appendChild(messageDiv);
+                });
+            } else {
+                chatContent.innerHTML = '<p>В этом чате пока нет сообщений.</p>';
+            }
+
+            chatContent.appendChild(chatMessages);
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            const chatInputDiv = document.createElement('div');
+            chatInputDiv.className = 'chat-input';
+            chatInputDiv.innerHTML = `
+            <input type="text" placeholder="Написать сообщение..." id="chat-input">
+            <button id="send-button">Отправить</button>
+            `;
+            chatContent.appendChild(chatInputDiv);
+
+            document.getElementById('send-button').addEventListener('click', () => {
+                const messageInput = document.getElementById('chat-input');
+                const messageText = messageInput.value.trim();
+
+                if (messageText !== '') {
+                    const receiverId = chat.inChat;
+
+                    socket.emit('sendMessage', {
+                        chatId: chat.id,
+                        senderId: chat.sender,
+                        receiverId: chat.receiver,
+                        message: messageText
+                    });
+
+                    messageInput.value = '';
+                }
+            });
+        }
+
+
+        socket.on('broadcastMessage', (data) => {
+            const chatContent = document.getElementById('chat-content');
+
+            if (data.chatId === chat.id) {
+                const isOutgoing = data.senderId === chat.sender;
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message ${isOutgoing ? 'outgoing' : 'incoming'}`;
+                messageDiv.innerHTML = `< span > ${data.message}</span >`;
+                chatContent.appendChild(messageDiv);
+
+                chatContent.scrollTop = chatContent.scrollHeight;
+            }
+        });
+    </script>
+</body>
+
+</html>

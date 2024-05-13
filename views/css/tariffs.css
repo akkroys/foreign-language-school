@@ -1,0 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Nunito Sans', sans-serif;
+    overflow-x: hidden;
+}
+
+#scrollBtn {
+    display: none;
+    position: fixed;
+    width: 50px;
+    bottom: 20px;
+    right: 20px;
+    z-index: 99;
+    font-size: 20px;
+    border: none;
+    outline: none;
+    background-color: #c07fd8;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+body::-webkit-scrollbar {
+    width: 10px;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #c07fd8;
+    border-radius: 20px;
+    border: 3px solid white;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 100vh;
+    background-color: white;
+    box-shadow: 0 0 20px rgba(192, 127, 216, 0.8);
+    padding: 20px 10px;
+}
+
+.navigation ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.navigation ul li {
+    padding: 10px;
+}
+
+.navigation ul li a {
+    color: #000;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.navigation ul li a:hover {
+    color: #4a235a;
+}
+
+.tariff-page {
+    flex-grow: 1;
+    padding: 20px;
+    margin-left: 220px;
+    margin-right: 220px;
+}
+
+.tariff-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px; /* Промежуток между блоками */
+}
+
+.tariff-block {
+    border: 1px solid #ddd; /* Граница блока */
+    border-radius: 10px; /* Скругленные углы */
+    padding: 20px;
+    width: 80%;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Легкая тень */
+}
+
+.tariff-block.central {
+    box-shadow: 0 0 20px rgba(192, 127, 216, 0.8); /* Подсветка центрального блока */
+    transform: scale(1.05); /* Легкое увеличение размера */
+}
+
+.select-tariff {
+    background-color: #c07fd8;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px; /* Скругленные углы для кнопок */
+    transition: background-color 0.3s;
+}
+
+.select-tariff:hover {
+    background-color: #844a99;
+}
+
+.user-profile {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 200px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(192, 127, 216, 0.8);
+    height: 100vh;
+    background-color: white;
+    border-left: 1px solid #ddd;
+}
+
+.user-profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.profile-link,
+.logout-button {
+    text-decoration: none;
+    color: #333;
+    transition: color 0.3s;
+}
+
+.profile-link:hover,
+.logout-button:hover {
+    color: #c07fd8;
+}
+
+.choose-tariff-heading {
+    text-align: center; /* Центрирование заголовка */
+    font-size: 1.5em;
+    padding: 10px;
+}

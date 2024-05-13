@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="/css/dashboardStyles.css">
+    <script src="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.js" charset="utf-8"></script>
+    <link href="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.css" rel="stylesheet" type="text/css"
+        charset="utf-8">
+</head>
+
+<body>
+
+    <div class="navigation">
+        <img src="/resources/лого.png" alt="" style="width: 100%; margin-bottom: 20px;">
+        <ul>
+            <li><a href="/dashboard">Расписание</a></li>
+            <li><a href="/user/chats">Чаты</a></li>
+            <li><a href="/user/tutors">Репетиторы</a></li>
+            <li><a href="/user/balance">Баланс</a></li>
+            <li><a href="/user/tariffs">Тарифы</a></li>
+        </ul>
+    </div>
+
+    <div class="calendar" style="height: 160vh;">
+        <div class="cal-name">Расписание занятий</div>
+        <div id="scheduler_here" class="dhx_cal_container" style="height: 155vh;">
+            <div class="dhx_cal_navline">
+                <div class="dhx_cal_prev_button" style="overflow-y: hidden;">&nbsp;</div>
+                <div class="dhx_cal_next_button" style="overflow-y: hidden;">&nbsp;</div>
+                <div class="dhx_cal_today_button"></div>
+                <div class="dhx_cal_date"></div>
+                <div class="dhx_cal_tab" name="day_tab"></div>
+                <div class="dhx_cal_tab" name="week_tab"></div>
+                <div class="dhx_cal_tab" name="month_tab"></div>
+            </div>
+            <div class="dhx_cal_header"></div>
+            <div class="dhx_cal_data"></div>
+        </div>
+        <script>
+            scheduler.config.load_date = "%Y-%m-%d %H:%i";
+            var currentDate = new Date();
+            scheduler.i18n.setLocale("ru");
+
+            scheduler.init("scheduler_here", currentDate, "week");
+            scheduler.config.readonly = true;
+            // scheduler.setLoadMode("day");
+
+            const formattedSchedules = <%- JSON.stringify(schedules) %>;
+            console.log('view schedules', formattedSchedules);
+
+            try {
+                scheduler.clearAll();
+                scheduler.parse(formattedSchedules, "json");
+                console.log("Loaded data:", scheduler.getEvents());
+            } catch (error) {
+                console.error("Error during scheduler load:", error);
+            }
+            
+            const dp = scheduler.createDataProcessor({
+                url: "/user/events",
+                mode: "REST",
+                updateFromResponse: true,
+            });
+        </script>
+
+    </div>
+    <div class="user-profile">
+        <% const profilePhoto=user.photo ? user.photo : '/resources/user.png' ; %>
+            <img src="<%= profilePhoto %>" alt="User Profile Picture" class="profile-img">
+            <div class="user-info">
+                <span class="user-name">
+                    <%= user.firstName %>
+                        <%= user.lastName %>
+                </span>
+
+                <a href="/profile" class="profile-link">Мой профиль</a>
+
+                <a href="/logout" class="logout-button">Выход</a>
+
+                <div class="notifications">
+                    <span class="notification-icon"></span>
+                </div>
+            </div>
+    </div>
+</body>
+
+</html>

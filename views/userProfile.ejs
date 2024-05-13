@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/profileStyles.css">
+    <title>Профиль</title>
+</head>
+
+<body>
+    <div class="profile-container">
+        <div class="navigation">
+            <img src="/resources/лого.png" alt="" style="width: 100%; margin-bottom: 20px;">
+            <ul>
+                <li><a href="/dashboard">Расписание</a></li>
+                <li><a href="#">Чаты</a></li>
+                <li><a href="/user/tutors">Репетиторы</a></li>
+                <li><a href="/user/balance">Баланс</a></li>
+                <li><a href="/user/tariffs">Тарифы</a></li>
+            </ul>
+        </div>
+        <div class="profile-content">
+            <form action="/profile/update" method="post" enctype="multipart/form-data">
+                <div class="profile-photo">
+                    <% const profilePhoto = user.photo ? user.photo : '/resources/user.png'; %>
+                    <img src="<%= profilePhoto %>" alt="User Photo" style="border-radius: 50%; width: 150px; height: 150px;">
+                    <input type="file" name="photo">
+                </div>
+                
+                <div class="profile-info">
+                    <label for="firstName">Имя:</label>
+                    <input type="text" name="firstName" value="<%= user.firstName %>" required>
+
+                    <label for="lastName">Фамилия:</label>
+                    <input type="text" name="lastName" value="<%= user.lastName %>" required>
+
+                    <label for="middleName">Отчество:</label>
+                    <input type="text" name="middleName" value="<%= user.middleName %>">
+
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" value="<%= user.email %>" required>
+                    <button type="submit">Сохранить изменения в профиле</button>
+                </div>
+
+            </form>
+
+            <form action="/profile/update-wish" method="post">
+                <div class="student-info">
+                    <label for="wish">Ваше пожелание:</label>
+                    <input type="text" name="wish" value="<%= student.wish %>">
+
+                    <label>Количество занятий на счету:</label>
+                    <span><%= student.lessonsCount %></span>
+
+                    <label>Пропущено занятий в этом месяце:</label>
+                    <span><%= student.skippedInThisMonth %></span>
+                    <button type="submit">Сохранить пожелание</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

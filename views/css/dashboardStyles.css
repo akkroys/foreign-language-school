@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Nunito Sans', sans-serif;
+    overflow-x: hidden;
+}
+
+#scrollBtn {
+    display: none;
+    position: fixed;
+    width: 50px;
+    bottom: 20px;
+    right: 20px;
+    z-index: 99;
+    font-size: 20px;
+    border: none;
+    outline: none;
+    background-color: #c07fd8;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+body::-webkit-scrollbar {
+    width: 10px;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #c07fd8;
+    border-radius: 20px;
+    border: 3px solid white;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+}
+
+.navigation {
+    background-color: white;
+    box-shadow: 0 0 20px rgba(192, 127, 216, 0.8);
+    grid-column: 1;
+    /* height: 100vh; */
+    height: 100%;
+    overflow-y: auto;
+    padding: 20px;
+    padding-left: 0;
+}
+
+.navigation ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.navigation ul li {
+    padding: 10px;
+}
+
+.navigation ul li a {
+    color: #000;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.navigation ul li a:hover {
+    color: #4a235a;
+}
+
+.calendar {
+    /* display: grid;
+            grid-template-columns: repeat(8, 1fr); */
+    margin: 1em 2em 3em 2em;
+    grid-column-start: 2;
+    grid-column-end: 10;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.cal-name {
+    text-align: center;
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.user-profile {
+    background-color: white;
+    box-shadow: 0 0 20px rgba(192, 127, 216, 0.8);
+    grid-column: 10;
+    width: 120%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    height: 100%;
+}
+
+.user-profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.user-info p {
+    margin: 0;
+    color: #000;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    margin-right: 20px; /* Отступ между именем и остальными элементами */
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.profile-link,
+.logout-button {
+    margin-right: 15px; /* Отступ между элементами */
+    text-decoration: none; /* Убираем подчеркивание */
+    color: #333; /* Цвет текста */
+    font-size: 1.1em;
+    transition: color 0.3s; /* Плавное изменение цвета при наведении */
+}
+
+.profile-link:hover,
+.logout-button:hover {
+    color: #c07fd8; /* Цвет при наведении */
+}
+
+.notification-icon {
+    background-color: #f00; /* Красный цвет для иконки уведомления */
+    border-radius: 50%; /* Сферическая форма */
+    width: 10px; /* Размеры */
+    height: 10px;
+}
+
+
+.notifications {
+    color: #c07fd8;
+    font-size: 20px;
+}
+
+.profile-img {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    box-shadow: 0 0 20px rgba(192, 127, 216, 0.6);
+}

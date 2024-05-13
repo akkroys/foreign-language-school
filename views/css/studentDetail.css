@@ -1,0 +1,33 @@
+.container {
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2em;
+    color: #333;
+}
+
+p {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 15px 25px;
+    font-size: 1.2em;
+    background-color: #c07fd8;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #a85db7;
+}
+
+button:active {
+    background-color: #8f4ca0;
+}
+

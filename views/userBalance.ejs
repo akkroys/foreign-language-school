@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Баланс</title>
+    <link rel="stylesheet" href="/css/balanceStyles.css">
+</head>
+
+<body>
+
+    <div class="main-container">
+        <div class="navigation">
+            <img src="/resources/лого.png" alt="Лого">
+            <ul>
+                <li><a href="/dashboard">Расписание</a></li>
+                <li><a href="#">Чаты</a></li>
+                <li><a href="/user/tutors">Репетиторы</a></li>
+                <li><a href="/user/balance">Баланс</a></li>
+                <li><a href="/user/tariffs">Тарифы</a></li>
+            </ul>
+        </div>
+
+        <div class="balance-page">
+            <h1>Баланс</h1>
+            <p>Текущий баланс: <strong>
+                    <%= balance %> BYN
+                </strong></p>
+
+            <% if (student) { %>
+                <p>Доступно занятий: <strong>
+                        <%= student.lessonsCount %>
+                    </strong></p>
+                <% } %>
+
+                    <label for="tariffSelect">Выберите тариф для покупки:</label>
+                    <br>
+                    <select id="tariffSelect" class="large-dropdown">
+                        <% tariffs.forEach(tariff=> { %>
+                            <option value="<%= tariff.id %>">
+                                <%= tariff.title %> - <%= tariff.lessonsCount %> занятий за <%= tariff.amount %> BYN
+                            </option>
+                            <% }); %>
+                    </select>
+
+                    <div class="balance-actions">
+                        <button class="action-btn" onclick="purchaseTariff()">Купить пакет</button>
+                        <button class="action-btn" onclick="topUp()">Пополнить баланс</button>
+                        <button class="action-btn" onclick="purchaseLesson()">Приобрести занятие</button>
+                    </div>
+
+                    <h2>История платежей</h2>
+                    <ul class="transaction-history">
+                        <% transactions.forEach(transaction => { %>
+                            <li>
+                                <%= transaction.date %> - <%= transaction.customMessage %> - <%= transaction.amount %> BYN
+                            </li>
+                        <% }); %>
+                    </ul>
+        </div>
+
+
+        <div class="user-profile">
+            <% const profilePhoto=user.photo ? user.photo : '/resources/user.png' ; %>
+                <img src="<%= profilePhoto %>" alt="User Profile Picture" class="profile-img">
+                <div class="user-info">
+                    <span class="user-name">
+                        <%= user.firstName %>
+                            <%= user.lastName %>
+                    </span>
+
+                    <a href="/profile" class="profile-link">Мой профиль</a>
+
+                    <a href="/logout" class="logout-button">Выход</a>
+
+                    <div class="notifications">
+                        <span class="notification-icon"></span>
+                    </div>
+                </div>
+        </div>
+        <div id="insufficientFundsModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <p>Недостаточно средств для покупки. Пожалуйста, пополните баланс.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function topUp() {
+            const amount = prompt("Введите сумму для пополнения:");
+            if (amount) {
+                fetch('/user/balance/top-up', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ amount })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Новый баланс:", data.newBalance);
+                        location.reload();
+                    })
+                    .catch(err => {
+                        console.error("Ошибка при пополнении баланса:", err);
+                    });
+            }
+        }
+
+        function showModal() {
+            const modal = document.getElementById('insufficientFundsModal');
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('insufficientFundsModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function purchaseLesson() {
+            const lessonCost = 40;
+
+            fetch('/user/balance/check-funds-lesson', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ cost: lessonCost })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'insufficient') {
+                        showModal();
+                    } else {
+                        fetch('/user/balance/purchase-lesson', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ cost: lessonCost })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log("Новый баланс:", data.newBalance);
+                                location.reload();
+                            });
+                    }
+                })
+                .catch(err => {
+                    console.error("Ошибка при проверке баланса:", err);
+                });
+        }
+
+
+        function purchaseTariff() {
+            const tariffId = document.getElementById('tariffSelect').value;
+
+            fetch('/user/balance/check-funds-tariff', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ tariffId })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'insufficient') {
+                        showModal();
+                    } else {
+                        fetch('/user/balance/purchase-tariff', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ tariffId })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log("Новый баланс:", data.newBalance);
+                                console.log("Обновленное количество занятий:", data.updatedLessonsCount);
+                                location.reload();
+                            });
+                    }
+                })
+                .catch(err => {
+                    console.error("Ошибка при проверке баланса:", err);
+                });
+        }
+
+    </script>
+
+</body>
+
+</html>

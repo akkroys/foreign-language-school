@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/tutorDetail.css">
+    <title>Профиль репетитора</title>
+</head>
+<body>
+    <div class="container">
+        <h1><%= tutor.firstName %> <%= tutor.lastName %></h1>
+
+        <p>Почта: <%= tutor.email %></p>
+
+        <form action="/admin/tutors/<%= tutor.id %>/demote" method="POST">
+            <button type="submit">Разжаловать</button>
+        </form>
+
+        <h2>Курсы, закрепленные за репетитором</h2>
+        <ul>
+            <% courses.forEach(function(course) { %>
+                <li>
+                    <%= course.title %> 
+                    <form action="/admin/tutors/<%= tutor.id %>/remove-course" method="POST" style="display:inline-block;">
+                        <input type="hidden" name="courseId" value="<%= course.id %>">
+                        <button type="submit">Удалить</button>
+                    </form>
+                </li>
+            <% }); %>
+        </ul>
+
+        <form action="/admin/tutors/<%= tutor.id %>/add-course" method="POST">
+            <label for="courseId">Добавить курс:</label>
+            <select name="courseId">
+                <% availableCourses.forEach(function(course) { %>
+                    <option value="<%= course.id %>"><%= course.title %></option>
+                <% }); %>
+            </select>
+            <button type="submit">Добавить</button>
+        </form>
+    </div>
+</body>
+</html>
