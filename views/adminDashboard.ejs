@@ -17,7 +17,7 @@
         <img src="/resources/лого.png" alt="" style="width: 100%; margin-bottom: 20px;">
         <ul>
             <li><a href="/dashboard">Управление школой</a></li>
-            <li><a href="#">Чаты</a></li>
+            <li><a href="/admin/chats">Чаты</a></li>
             <li><a href="/admin/courses">Курсы</a></li>
             <li><a href="/admin/tutors">Репетиторы</a></li>
             <li><a href="/admin/students">Ученики</a></li>
@@ -25,53 +25,83 @@
         </ul>
     </div>
 
-    <div class="calendar" style="height: 160vh;">
+    <div class="calendar">
         <div class="cal-name">Расписание занятий</div>
-        <div id="scheduler_here" class="dhx_cal_container" style="height: 155vh;">
+        <div id="scheduler_here" class="dhx_cal_container" style="height: 160vh;">
             <div class="dhx_cal_navline">
-                <div class="dhx_cal_prev_button" style="overflow-y: hidden;">&nbsp;</div>
-                <div class="dhx_cal_next_button" style="overflow-y: hidden;">&nbsp;</div>
-                <div class="dhx_cal_today_button"></div>
+                <div class="dhx_cal_prev_button" style="height: 100%;">&nbsp;</div>
+                <div class="dhx_cal_next_button" style="height: 100%;">&nbsp;</div>
+                <div class="dhx_cal_today_button">Сегодня</div>
                 <div class="dhx_cal_date"></div>
-                <div class="dhx_cal_tab" name="day_tab"></div>
-                <div class="dhx_cal_tab" name="week_tab"></div>
-                <div class="dhx_cal_tab" name="month_tab"></div>
+                <div class="dhx_cal_tab" name="day_tab">День</div>
+                <div class="dhx_cal_tab" name="week_tab">Неделя</div>
+                <div class="dhx_cal_tab" name="month_tab">Месяц</div>
             </div>
             <div class="dhx_cal_header"></div>
             <div class="dhx_cal_data"></div>
         </div>
         <script>
+            const currentDate = new Date();
             scheduler.config.load_date = "%Y-%m-%d %H:%i";
-            var currentDate = new Date();
+            // scheduler.config.readonly = true;
             scheduler.i18n.setLocale("ru");
-
             scheduler.init("scheduler_here", currentDate, "week");
-            scheduler.config.readonly = true;
-            scheduler.setLoadMode("day");
+            const schedulesData = <%- JSON.stringify(schedules) %>;
+            console.log('schedules:', schedulesData);
 
-            scheduler.load("/events", "json");
+            try {
+                scheduler.clearAll();
+                scheduler.parse(schedulesData, "json");
+                console.log("Loaded data:", scheduler.getEvents());
+            } catch (error) {
+                console.error("Error during scheduler load:", error);
+            }
+
+            scheduler.attachEvent("onLoadEnd", () => {
+                console.log("Data loaded successfully:", scheduler.getEvents());
+            });
+
+            scheduler.attachEvent("onLoadError", (type, description, data) => {
+                console.error("Error loading data:", type, description, data);
+            });
 
             const dp = scheduler.createDataProcessor({
-                url: "/events",
-                mode: "REST"
+                url: "/admin/events",
+                mode: "REST",
+                updateFromResponse: true,
             });
+            scheduler.attachEvent("onEventClick", function (id, e) {
+                console.log("Сработал обработчик onEventClick");
+                const event = scheduler.getEvent(id);
+                alert("Занятие: " + event.text + "\n" +
+                    "Статус: " + event.status + "\n" +
+                    "Репетитор: " + event.tutor_name + "\n" +
+                    "Ученик: " + event.student_name + "\n" +
+                    "Начало: " + event.start_date + "\n" +
+                    "Конец: " + event.end_date);
+                return false;
+            });
+
         </script>
 
     </div>
     <div class="user-profile">
-        <% const profilePhoto = user.photo ? user.photo : '/resources/user.png'; %>
-        <img src="<%= profilePhoto %>" alt="User Profile Picture" class="profile-img">
-        <div class="user-info">
-            <span class="user-name"><%= user.firstName %> <%= user.lastName %></span>
-        
-            <a href="/profile" class="profile-link">Мой профиль</a>
-        
-            <a href="/logout" class="logout-button">Выход</a>
-        
-            <div class="notifications">
-                <span class="notification-icon"></span>
+        <% const profilePhoto=user.photo ? user.photo : '/resources/user.png' ; %>
+            <img src="<%= profilePhoto %>" alt="User Profile Picture" class="profile-img">
+            <div class="user-info">
+                <span class="user-name">
+                    <%= user.firstName %>
+                        <%= user.lastName %>
+                </span>
+
+                <a href="/profile" class="profile-link">Мой профиль</a>
+
+                <a href="/logout" class="logout-button">Выход</a>
+
+                <div class="notifications">
+                    <span class="notification-icon"></span>
+                </div>
             </div>
-        </div>
     </div>
 </body>
 

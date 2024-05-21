@@ -2,13 +2,14 @@ import ScheduleModel from '../models/scheduleModel.js';
 import TutorModel from '../models/tutorModel.js';
 import UserModel from '../models/userModel.js';
 import ChatModel from '../models/chatModel.js';
+import StudentModel from '../models/studentModel.js';
 import { createChat } from './chatController.js';
 
 export const addScheduleSlot = (req, res) => {
     const tutorId = req.user.id;
-    const { start_date, end_date, text } = req.body;
+    const { start_date, end_date, text, status } = req.body;
 
-    ScheduleModel.addScheduleSlot(tutorId, start_date, end_date, text, (error, scheduleId) => {
+    ScheduleModel.addScheduleSlot(tutorId, start_date, end_date, text, status, (error, scheduleId) => {
         if (error) {
             console.error("Ошибка при добавлении слота расписания:", error);
             return res.status(500).send("Ошибка при добавлении слота расписания");
@@ -118,50 +119,66 @@ export const bookLesson = (req, res) => {
 
         const tutorId = slot.tutorId;
 
-        TutorModel.getFullScheduleData(tutorId, (error, scheduleData) => {
-            if (error) {
-                console.error("Ошибка при получении данных расписания:", error);
-                return res.status(500).json({ error: 'Ошибка при получении данных расписания' });
+        StudentModel.findByUserId(userId, (studentError, student) => {
+            if (studentError) {
+                console.error("Ошибка при получении данных студента:", studentError);
+                return res.status(500).json({ error: 'Ошибка при получении данных студента' });
             }
 
-            const updatedDetails = {
-                note: `Занятие с ${userName}`,
-                userId,
-                userName,
-                status: 1 
-            };
+            if (!student) {
+                return res.status(404).json({ error: 'Студент не найден' });
+            }
 
-            ScheduleModel.updateSchedule(slotId, updatedDetails, (updateErr, updateResult) => {
-                if (updateErr) {
-                    console.error("Ошибка при обновлении расписания:", updateErr);
-                    return res.status(500).json({ error: 'Ошибка при обновлении расписания' });
+            if (student.lessonsCount <= 0) {
+                return res.status(400).json({ error: 'Недостаточно занятий для бронирования' });
+            }
+
+            StudentModel.decrementLessonCount(userId, (decrementError) => {
+                if (decrementError) {
+                    console.error("Ошибка при обновлении количества занятий:", decrementError);
+                    return res.status(500).json({ error: 'Ошибка при обновлении количества занятий' });
                 }
 
-                ChatModel.getExistingChat(userId, tutorId, (chatError, existingChat) => {
-                    if (chatError) {
-                        console.error("Ошибка при проверке существования чата:", chatError);
-                        return res.status(500).json({ error: 'Ошибка при создании чата' });
+                const updatedDetails = {
+                    note: `Занятие с ${userName}`,
+                    userId,
+                    userName,
+                    status: 1
+                };
+
+                ScheduleModel.updateSchedule(slotId, updatedDetails, (updateErr, updateResult) => {
+                    if (updateErr) {
+                        console.error("Ошибка при обновлении расписания:", updateErr);
+                        return res.status(500).json({ error: 'Ошибка при обновлении расписания' });
                     }
 
-                    if (!existingChat) {
-                        createChat(userId, tutorId, (createError, newChat) => {
-                            if (createError) {
-                                console.error("Ошибка при создании нового чата:", createError);
-                                return res.status(500).json({ error: 'Ошибка при создании нового чата' });
-                            }
+                    ChatModel.getExistingChat(userId, tutorId, (chatError, existingChat) => {
+                        if (chatError) {
+                            console.error("Ошибка при проверке существования чата:", chatError);
+                            return res.status(500).json({ error: 'Ошибка при создании чата' });
+                        }
 
-                            console.log("Новый чат создан:", newChat.id);
-                        });
-                    } else {
-                        console.log("Чат уже существует:", existingChat.id);
-                    }
+                        if (!existingChat) {
+                            createChat(userId, tutorId, (createError, newChat) => {
+                                if (createError) {
+                                    console.error("Ошибка при создании нового чата:", createError);
+                                    return res.status(500).json({ error: 'Ошибка при создании нового чата' });
+                                }
+
+                                console.log("Новый чат создан:", newChat.id);
+                            });
+                        } else {
+                            console.log("Чат уже существует:", existingChat.id);
+                        }
+                    });
+
+                    return res.status(200).json({ success: true, message: 'Занятие успешно забронировано' });
                 });
-
-                return res.status(200).json({ success: true, message: 'Занятие успешно забронировано' });
             });
         });
     });
 };
+
 
 
 export const getUserSchedule = (req, callback) => {
@@ -179,14 +196,49 @@ export const getUserSchedule = (req, callback) => {
             end_date: new Date(schedule.endDate).toISOString(),
             text: schedule.tutorFullName,
         }));
-        
+
         sanitizedSchedules.forEach(schedule => {
             delete schedule.startDate;
             delete schedule.endDate;
         });
 
-        console.log("Sanitized schedules:", sanitizedSchedules);
+        // console.log("Sanitized schedules:", sanitizedSchedules);
 
         callback(null, sanitizedSchedules);
+    });
+};
+
+export const adminGetAllSchedulesForDHTMLX = (callback) => {
+    ScheduleModel.adminGetAllSchedulesForDHTMLX((error, schedules) => {
+        if (error) {
+            console.error("Ошибка при получении расписания:", error);
+            return callback({ error: 'Ошибка при получении расписания' });
+        }
+        // console.log('schedules admin:', schedules);
+        callback(null, schedules);
+    });
+};
+
+export const adminDeleteSchedule = (id, callback) => {
+    ScheduleModel.adminDeleteSchedule(id, (error, result) => {
+        if (error) {
+            console.error("Ошибка при удалении слота:", error);
+            return callback({ error: 'Ошибка при удалении слота' });
+        }
+
+        callback(null, { success: true, affectedRows: result.affectedRows });
+    });
+};
+
+export const adminUpdateSchedule = (id, updateDetails, callback) => {
+    const { userId, userName, courseId, status, note } = updateDetails;
+
+    ScheduleModel.adminUpdateSchedule(id, { userId, userName, courseId, status, note }, (error, result) => {
+        if (error) {
+            console.error("Ошибка при обновлении слота:", error);
+            return callback({ error: 'Ошибка при обновлении слота' });
+        }
+
+        callback(null, { success: true, affectedRows: result.affectedRows });
     });
 };

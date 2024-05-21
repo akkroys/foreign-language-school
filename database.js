@@ -379,7 +379,7 @@ connection.connect(err => {
 });
 
 connection.on('error', function (err) {
-    console.error('Database connection error:', err);
+    console.error('Database connection error db:', err);
 });
 
 export default connection;

@@ -3,7 +3,7 @@ import { updateUserProfile } from './userController.js';
 import { getStudentByUserId, updateStudentProfileC } from './studentController.js';
 import UserModel from '../models/userModel.js';
 import { getTutorByUserId } from './tutorController.js';
-import { getSchedulesForDHTMLX, getUserSchedule } from './scheduleController.js';
+import { getSchedulesForDHTMLX, getUserSchedule, adminGetAllSchedulesForDHTMLX } from './scheduleController.js';
 
 // const storage = multer.diskStorage({
 //     destination: (req, file, cb) => {
@@ -63,7 +63,17 @@ const commonDashboard = (req, res) => {
 
     switch (userRole) {
         case 'admin':
-            res.render('adminDashboard', { user: req.user });
+            adminGetAllSchedulesForDHTMLX((error, schedules) => {
+                if (error) {
+                    console.error("Error getting schedules for admin:", error);
+                    return res.redirect('/error');
+                }
+                if (!schedules) {
+                    schedules = [];
+                }
+                // console.log('comr schedules: ', schedules);
+                res.render('adminDashboard', { user: req.user, schedules });
+            });
             break;
         case 'tutor':
             if (!tutorId) {
@@ -79,7 +89,7 @@ const commonDashboard = (req, res) => {
                 if (!schedules) {
                     schedules = [];
                 }
-                console.log('schedules:', schedules);
+                // console.log('schedules:', schedules);
                 res.render('tutorDashboard', { user: req.user, schedules });
             });
             break;
@@ -95,7 +105,7 @@ const commonDashboard = (req, res) => {
                     schedules = [];
                 }
 
-                console.log('User schedules:', schedules);
+                // console.log('User schedules:', schedules);
                 res.render('userDashboard', { user: req.user, schedules });
             });
             break;

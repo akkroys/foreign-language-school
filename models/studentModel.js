@@ -47,6 +47,24 @@ export default class StudentModel {
         });
     }
 
+    static decrementLessonCount(userId, callback) {
+        connection.query(
+            'UPDATE students SET lessonsCount = lessonsCount - 1 WHERE userId = ? AND lessonsCount > 0',
+            [userId],
+            (error, results) => {
+                if (error) {
+                    return callback(error, null);
+                }
+    
+                if (results.affectedRows === 0) {
+                    return callback(new Error('Insufficient lessons count'), null);
+                }
+    
+                return callback(null, results);
+            }
+        );
+    }
+
 
     static updateWish(userId, wish, callback) {
         connection.query(

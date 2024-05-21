@@ -270,7 +270,7 @@ export const renderBookLessonPage = (req, res) => {
                 return res.status(500).send("Error retrieving schedule data");
             }
 
-            console.log("Retrieved schedules:", schedules);
+            // console.log("Retrieved schedules:", schedules);
 
             const freeSlots = schedules.filter(schedule => {
                 const startDate = new Date(schedule.startDate);

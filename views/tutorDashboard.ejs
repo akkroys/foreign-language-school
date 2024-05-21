@@ -77,6 +77,7 @@
                     start_date: event_object.start_date,
                     end_date: event_object.end_date,
                     text: event_object.text,
+                    status: event_object.status
                 };
                 dp.sendData();
             });
@@ -88,6 +89,20 @@
             scheduler.attachEvent("onEventDeleted", (event_id) => {
                 dp.sendData();
             });
+
+            scheduler.config.lightbox.sections = [
+                { name: "description", height: 130, map_to: "text", type: "textarea", focus: true },
+                {
+                    name: "status", height: 30, map_to: "status", type: "select", options: [
+                        { key: "0", label: "Свободное время" },
+                        { key: "1", label: "Запланированное занятие" },
+                        { key: "2", label: "Проведенное занятие" },
+                        { key: "3", label: "Перенесенное занятие" },
+                        { key: "4", label: "Пропущенное занятие" }
+                    ]
+                },
+                { name: "time", height: 72, type: "time", map_to: "auto" },
+            ];
         </script>
     </div>
 
@@ -98,7 +113,7 @@
                 <span class="user-name">
                     <%= user.firstName %>
                         <%= user.lastName %>
-                        <!-- <%= schedulesData = JSON.stringify(schedules); %>
+                            <!-- <%= schedulesData = JSON.stringify(schedules); %>
                         <%= console.log('schedules', schedulesData);  %> -->
                 </span>
 
