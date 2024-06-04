@@ -15,72 +15,62 @@
                 <li><a href="/dashboard">Расписание</a></li>
                 <li><a href="/user/chats">Чаты</a></li>
                 <li><a href="/user/tutors">Репетиторы</a></li>
-                <li><a href="/user/balance">Баланс</a></li>
-                <li><a href="/user/tariffs">Тарифы</a></li>
+                <li><a href="/user/balance">Баланс</a></ли>
+                <li><a href="/user/tariffs">Тарифы</a></ли>
             </ul>
         </div>
 
         <div class="tutors-page">
             <h1>Мои курсы</h1>
-            <% if (courses && courses.length> 0) { %>
+            <% if (courses && courses.length > 0) { %>
                 <ul>
-                    <% courses.forEach(course=> { %>
-                        <li><strong>
-                                <%= course.title %>
-                            </strong></li>
-                        <% }); %>
+                    <% courses.forEach(course => { %>
+                        <li><strong><%= course.title %></strong></li>
+                    <% }); %>
                 </ul>
+            <% } else { %>
+                <p>Вы пока не зарегистрированы ни на один курс.</p>
+            <% } %>
+
+            <button class="register-course-btn" onclick="window.location.href='/user/courses'">Записаться на курс</button>
+
+            <h2>Мои репетиторы</h2>
+            <ul class="tutor-list">
+                <% if (tutors && tutors.length > 0) { %>
+                    <% tutors.forEach(tutor => { %>
+                        <li class="tutor-item">
+                            <div class="tutor-info">
+                                <img src="<%= tutor.photo ? tutor.photo : '/resources/user.png' %>" alt="Фото репетитора" class="tutor-photo">
+                                <div class="tutor-details">
+                                    <strong><%= tutor.firstName %> <%= tutor.lastName %></strong>
+                                    <p><%= tutor.about %></p>
+                                    <p>Курсы:
+                                        <% tutor.courses.forEach(course => { %>
+                                            <span class="course-title"><%= course.title %></span>
+                                        <% }); %>
+                                    </p>
+                                </div>
+                            </div>
+                            <button class="action-btn" onclick="bookLesson(<%= tutor.userId %>)">Записаться на занятие</button>
+                        </li>
+                    <% }); %>
                 <% } else { %>
-                    <p>Вы пока не зарегистрированы ни на один курс.</p>
-                    <% } %>
-
-                        <button class="register-course-btn" onclick="window.location.href='/user/courses'">Записаться на
-                            курс</button>
-
-                        <h2>Мои репетиторы</h2>
-                        <ul class="tutor-list">
-                            <% if (tutors && tutors.length> 0) { %>
-                                <% tutors.forEach(tutor=> { %>
-                                    <li class="tutor-item">
-                                        <div class="tutor-info">
-                                            <img src="<%= tutor.photo ? tutor.photo : '/resources/user.png' %>"
-                                                alt="Фото репетитора" class="tutor-photo">
-                                            <div class="tutor-details">
-                                                <strong>
-                                                    <%= tutor.firstName %>
-                                                        <%= tutor.lastName %>
-                                                </strong>
-                                                <p>
-                                                    <%= tutor.about %>
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        
-                                        <button class="action-btn" onclick="bookLesson(<%= tutor.userId %>)">Записаться на
-                                            занятие</button>
-                                    </li>
-                                    <% }); %>
-                                        <% } else { %>
-                                            <p>Репетиторы не назначены на ваш курс.</p>
-                                            <% } %>
-                        </ul>
+                    <p>Репетиторы не назначены на ваш курс.</p>
+                <% } %>
+            </ul>
         </div>
 
         <div class="user-profile">
-            <% const profilePhoto=user.photo ? user.photo : '/resources/user.png' ; %>
-                <img src="<%= profilePhoto %>" alt="Фото профиля" class="profile-img">
-                <div class="user-info">
-                    <span class="user-name">
-                        <%= user.firstName %>
-                            <%= user.lastName %>
-                    </span>
-                    <a href="/profile" class="profile-link">Мой профиль</a>
-                    <a href="/logout" class="logout-button">Выход</a>
-                    <div class="notifications">
-                        <span class="notification-icon"></span>
-                    </div>
+            <% const profilePhoto = user.photo ? user.photo : '/resources/user.png'; %>
+            <img src="<%= profilePhoto %>" alt="Фото профиля" class="profile-img" style="object-fit: cover;">
+            <div class="user-info">
+                <span class="user-name"><%= user.firstName %> <%= user.lastName %></span>
+                <a href="/profile" class="profile-link">Мой профиль</a>
+                <a href="/logout" class="logout-button">Выход</a>
+                <div class="notifications">
+                    <span class="notification-icon"></span>
                 </div>
+            </div>
         </div>
 
         <script>

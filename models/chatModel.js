@@ -71,4 +71,15 @@ export default class ChatModel {
             }
         );
     }
+
+    static updateChatName(chatId, chatName, callback) {
+        const query = 'UPDATE chats SET name = ? WHERE id = ?';
+        connection.query(query, [chatName, chatId], (error, results) => {
+            if (error) {
+                console.error("Ошибка при обновлении имени чата:", error);
+                return callback(error, null);
+            }
+            callback(null, results);
+        });
+    }
 }

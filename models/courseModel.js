@@ -126,32 +126,54 @@ export const getCoursesByUserId = (userId, callback) => {
 };
 
 export const getTutorsByCourseIds = (courseIds, callback) => {
+    if (courseIds.length === 0) {
+        return callback(null, []);
+    }
+
+    const placeholders = courseIds.map(() => '?').join(',');
+
     const query = `
         SELECT 
             t.userId,
             u.firstName,
             u.lastName,
             t.about,
-            u.photo
+            u.photo,
+            c.title AS courseTitle,
+            c.id AS courseId
         FROM 
             tutorCourse tc
         JOIN 
-            tutor t
-        ON 
-            tc.tutorId = t.userId
+            tutor t ON tc.tutorId = t.userId
         JOIN 
-            users u
-        ON 
-            t.userId = u.id
+            users u ON t.userId = u.id
+        JOIN 
+            courses c ON tc.courseId = c.id
         WHERE 
-            tc.courseId IN (?)
+            tc.courseId IN (${placeholders})
     `;
 
-    connection.query(query, [courseIds], (err, results) => {
+    connection.query(query, courseIds, (err, results) => {
         if (err) {
             return callback(err, null);
         }
 
-        callback(null, results);
+        const tutorsByCourse = results.reduce((acc, tutor) => {
+            if (!acc[tutor.userId]) {
+                acc[tutor.userId] = {
+                    userId: tutor.userId,
+                    firstName: tutor.firstName,
+                    lastName: tutor.lastName,
+                    about: tutor.about,
+                    photo: tutor.photo,
+                    courses: []
+                };
+            }
+            acc[tutor.userId].courses.push({ courseId: tutor.courseId, title: tutor.courseTitle });
+            return acc;
+        }, {});
+
+        const tutors = Object.values(tutorsByCourse);
+        callback(null, tutors);
     });
 };

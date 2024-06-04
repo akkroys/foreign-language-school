@@ -11,7 +11,7 @@ export const addScheduleSlot = (req, res) => {
 
     ScheduleModel.addScheduleSlot(tutorId, start_date, end_date, text, status, (error, scheduleId) => {
         if (error) {
-            console.error("Ошибка при добавлении слота расписания:", error);
+            // console.error("Ошибка при добавлении слота расписания:", error);
             return res.status(500).send("Ошибка при добавлении слота расписания");
         }
 

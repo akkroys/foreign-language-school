@@ -25,48 +25,48 @@ app.use(multer().any());
 
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: '*',
-  },
+    cors: {
+        origin: '*',
+    },
 });
 
 io.on('connection', (socket) => {
-  console.log('A user connected');
+    console.log('A user connected');
 
-  socket.on('sendMessage', (data) => {
-      console.log('Message received:', data);
+    socket.on('sendMessage', (data) => {
+        console.log('Message received:', data);
 
-      const req = {
-          params: { chatId: data.chatId },
-          body: { senderId: data.senderId, receiverId: data.receiverId, message: data.message },
-      };
-      const res = {
-          status: (code) => ({
-              json: (result) => {
-                  if (code >= 400) {
-                      console.error('Error:', result.error);
-                  } else {
-                      console.log('Message sent:', result);
+        const req = {
+            params: { chatId: data.chatId },
+            body: { senderId: data.senderId, receiverId: data.receiverId, message: data.message },
+        };
+        const res = {
+            status: (code) => ({
+                json: (result) => {
+                    if (code >= 400) {
+                        console.error('Error:', result.error);
+                    } else {
+                        console.log('Message sent:', result);
 
-                      io.emit('broadcastMessage', {
-                          chatId: data.chatId,
-                          senderId: data.senderId,
-                          receiverId: data.receiverId,
-                          message: data.message,
-                          messageTime: new Date(),
-                      });
-                  }
-              },
-          }),
-      };
+                        io.emit('broadcastMessage', {
+                            chatId: data.chatId,
+                            senderId: data.senderId,
+                            receiverId: data.receiverId,
+                            message: data.message,
+                            messageTime: new Date(),
+                        });
+                    }
+                },
+            }),
+        };
 
-      sendMessageController(req, res);
-  });
+        sendMessageController(req, res);
+    });
 
-  
-  socket.on('disconnect', () => {
-      console.log('A user disconnected');
-  });
+
+    socket.on('disconnect', () => {
+        console.log('A user disconnected');
+    });
 
 
 });
@@ -83,6 +83,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use((req, res, next) => {
+    res.locals.user = req.user;
+    next();
+});
 app.set('views', path.join(process.cwd(), 'views'));
 app.use(express.static(path.join(process.cwd(), '/views')));
 app.use('/', mainRouter);

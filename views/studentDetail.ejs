@@ -13,7 +13,7 @@
         <p>id: <%= student.id %></p>
         <p>Пожелание: <%= student.wish %></p>
         <p>Количество занятий: <%= student.lessonsCount %></p>
-        <p>Оплаченные занятия: <%= student.startWithPayment ? 'Да' : 'Нет' %></p>
+        <p>Оплаченные занятия: <%= student.startWithPayment ? 'Нет' : 'Да' %></p>
         <p>Пропущенные занятия в этом месяце: <%= student.skippedInThisMonth %></p>
 
         <form action="/admin/students/<%= student.id %>/promote" method="POST">

@@ -18,11 +18,11 @@
                 <li><a href="/admin/courses">Курсы</a></li>
                 <li><a href="/admin/tutors">Репетиторы</a></li>
                 <li><a href="/admin/students">Ученики</a></li>
-                <li><a href="#">Баланс</a></li>
+                <!-- <li><a href="#">Баланс</a></li> -->
             </ul>
         </div>
         <div class="profile-content">
-            <form action="/profile/update" method="post">
+            <form action="/profile/update" method="post" enctype="text">
                 <div class="profile-photo">
                     <% const profilePhoto=user.photo ? user.photo : '/resources/user.png' ; %>
                         <img src="<%= profilePhoto %>" alt="User Photo"

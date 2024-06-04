@@ -9,9 +9,9 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
             return done(error);
         }
 
-        if (results.length === 0) {
-            return done(null, false, { message: 'Incorrect email.' });
-        }
+        // if (results.length === 0) {
+        //     return done(null, false, { message: 'Incorrect email.' });
+        // }
 
         const user = results;
         console.log('user to login', user.email);

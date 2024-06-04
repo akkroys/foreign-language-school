@@ -23,7 +23,7 @@
     padding: 10px;
     border-radius: 50%;
 }
-  
+
 
 body::-webkit-scrollbar {
     width: 10px;
@@ -127,6 +127,7 @@ a:hover {
 
 .first-block-left p {
     margin-bottom: 3em;
+    margin-left: 10px;
     font-size: 15pt;
 }
 
@@ -148,6 +149,7 @@ a:hover {
 .button {
     display: inline-block;
     padding: 15px 25px;
+    margin: 10px;
     background-color: #c07fd8;
     color: white;
     font-size: 12pt;
@@ -304,12 +306,12 @@ label {
     font-size: 10pt;
 }
 
-input:focus + .underline {
+input:focus+.underline {
     background-color: #c07fd8;
 }
 
-input:focus + label,
-input:not(:placeholder-shown) + label {
+input:focus+label,
+input:not(:placeholder-shown)+label {
     top: -30px;
     font-size: 12px;
     color: #c07fd8;
@@ -344,6 +346,232 @@ input:not(:placeholder-shown) + label {
 }
 
 .error-message {
-    color: red; 
+    color: red;
     margin-top: 10px;
+}
+
+.testimonials-section {
+    text-align: center;
+    margin: 50px 0;
+}
+
+.testimonials-carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.testimonials-wrapper {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.testimonials {
+    display: flex;
+    transition: transform 0.5s ease;
+    justify-content: center;
+}
+
+.testimonial {
+    flex: 0 0 25%;
+    box-sizing: border-box;
+    padding: 20px;
+    background: #fff;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(192, 127, 216, 0.5);}
+
+.testimonial-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.testimonial-description {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+}
+
+.testimonial-author img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.author-info {
+    text-align: left;
+}
+
+.author-name {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.testimonial-date {
+    font-size: 12px;
+    color: #999;
+}
+
+.carousel-control {
+    background-color: rgba(192, 127, 216, 0.7);
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    border-radius: 50%;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+.carousel-control:hover {
+    background-color: rgba(192, 127, 216, 0.9);
+}
+
+.prev {
+    left: -25px;
+}
+
+.next {
+    right: -25px;
+}
+
+
+.faq-section {
+    padding: 2em 4em;
+    background-color: #f5f0f9;
+    text-align: center;
+}
+
+.faq-section h2 {
+    margin: 1em 0;
+    font-weight: 700;
+    font-size: 20pt;
+    color: #c07fd8;
+}
+
+.faq {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.faq-item {
+    margin-bottom: 1em;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em;
+    background-color: #c07fd8;
+    color: white;
+    font-size: 16px;
+}
+
+.faq-answer {
+    display: none;
+    padding: 1em;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+    border-top: 1px solid #eee;
+}
+
+.faq-toggle {
+    transition: transform 0.3s ease;
+}
+
+.faq-item.open .faq-answer {
+    display: block;
+}
+
+.faq-item.open .faq-toggle {
+    transform: rotate(90deg);
+}
+
+/* Footer Section */
+.footer {
+    background-color: #c07fd8;
+    color: white;
+    padding: 2em 4em;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.footer-info,
+.footer-links,
+.footer-social {
+    flex: 1;
+    min-width: 200px;
+    margin-bottom: 1em;
+}
+
+.footer-info h3 {
+    margin-bottom: 0.5em;
+    font-size: 18pt;
+}
+
+.footer-links h4,
+.footer-social h4 {
+    margin-bottom: 0.5em;
+    font-size: 16pt;
+}
+
+.footer-links ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.5em;
+}
+
+.footer-links a,
+.footer-social a {
+    color: white;
+    text-decoration: none;
+}
+
+.footer-links a:hover,
+.footer-social a:hover {
+    text-decoration: underline;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 1em;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer-bottom p {
+    margin: 0;
+    font-size: 12pt;
 }

@@ -139,7 +139,7 @@ export const promoteToTutor = (req, res) => {
             return res.redirect('/error');
         }
 
-        res.redirect(`/students`);
+        res.redirect(`/admin/students`);
     });
 };
 

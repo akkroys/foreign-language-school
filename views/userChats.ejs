@@ -70,7 +70,7 @@
         </div>
 
         <div class="user-profile">
-            <img src="<%= user.photo || '/resources/user.png' %>" alt="Фото профиля" class="profile-img">
+            <img src="<%= user.photo || '/resources/user.png' %>" alt="Фото профиля" class="profile-img" style="object-fit: cover;">
             <div class="user-info">
                 <span class="user-name">
                     <%= user.firstName %>

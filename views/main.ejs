@@ -80,19 +80,24 @@
         </div>
         <script>
             const logo = document.getElementById('logo');
-    
+
             logo.addEventListener('click', () => {
                 window.location.href = '/';
             });
         </script>
         <nav class="header-navigation">
             <ul class="nav">
-                <li><a href="#">Курсы</a></li>
-                <li><a href="#">Преподаватели</a></li>
-                <li><a href="#">Отзывы</a></li>
-                <li><a href="#">О нас</a></li>
-                <li><a href="/login">Вход</a></li>
-                <li><a href="/register">Регистрация</a></li>
+                <!-- <li><a href="#">Курсы</a></li>
+                <li><a href="#">Преподаватели</a></li> -->
+                <li><a href="#testimonials">Отзывы</a></li>
+                <li><a href="#about">О нас</a></li>
+                <% if (user) { %>
+                    <li><a href="/dashboard"><%= user.firstName %> <%= user.lastName %></a></li>
+                    <li><a href="/logout">Выход</a></li>
+                <% } else { %>
+                    <li><a href="/login">Вход</a></li>
+                    <li><a href="/register">Регистрация</a></li>
+                <% } %>
             </ul>
         </nav>
     </div>
@@ -117,15 +122,15 @@
         <div class="first-block-left">
             <h2>Откройте мир языков с SHAQ</h2>
             <p>Наша программа разработана специально для тех,
-                кто ищет качественное обучение с индивидуальной
-                программой, не выходя из дома!</p>
-            <a href="#" class="button">Записаться на пробный урок</a>
+                кто ищет качественное обучение с индивидуальным
+                подходом, не выходя из дома!</p>
+            <a href="/login" class="button">Записаться на занятие</a>
         </div>
         <div class="first-block-right">
             <img src="./resources/girl-with-book.png" alt="">
         </div>
     </div>
-    <div class="second-block">
+    <div class="second-block" id="about">
         <h2>Почему выбирают нас?</h2>
         <div class="block-row">
             <div class="block">
@@ -171,6 +176,236 @@
         </div>
     </div>
 
+    <div class="testimonials-section" id="testimonials">
+        <h2>Гордимся положительными отзывами наших студентов</h2>
+        <div class="testimonials-carousel">
+            <!-- <button class="carousel-control prev" onclick="prevTestimonial()">&#10094;</button> -->
+            <div class="testimonials-wrapper">
+                <div class="testimonials">
+                    <div class="testimonial">
+                        <p class="testimonial-text">Преодолела страх говорить на английском</p>
+                        <p class="testimonial-description">Благодаря терпеливости и поддержке нашего преподавателя, я
+                            наконец-то преодолела свой страх говорить на английском. Теперь я чувствую себя уверенно и
+                            готова общаться на английском языке.</p>
+                        <div class="testimonial-author">
+                            <img src="/resources/uploads/1_445A7697.jpg" alt="Елена Кнур">
+                            <div class="author-info">
+                                <p class="author-name">Елена Кнур</p>
+                                <p class="testimonial-date">17.08.2023</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial">
+                        <p class="testimonial-text">Изучение английского никогда не было таким легким!</p>
+                        <p class="testimonial-description">Я удивлена, насколько легко и интересно проходит обучение
+                            английскому языку. Программа курса очень хорошо структурирована, материалы объясняются
+                            доступно и легко.</p>
+                        <div class="testimonial-author">
+                            <img src="/resources/uploads/1_445A7697.jpg" alt="Ольга Васильева">
+                            <div class="author-info">
+                                <p class="author-name">Ольга Васильева</p>
+                                <p class="testimonial-date">17.08.2023</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial">
+                        <p class="testimonial-text">Подготовка к экзамену стала возможной благодаря качественной
+                            программе обучения</p>
+                        <p class="testimonial-description">Благодаря качественной программе подготовки к экзаменам, я
+                            чувствую себя готовым справиться с любыми испытаниями. Мои навыки английского существенно
+                            улучшились, и я уверена, что достигну высоких результатов на экзамене.</p>
+                        <div class="testimonial-author">
+                            <img src="/resources/uploads/1_445A7697.jpg" alt="Анастасия Игнатьева">
+                            <div class="author-info">
+                                <p class="author-name">Анастасия Игнатьева</p>
+                                <p class="testimonial-date">17.08.2023</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="testimonial">
+                        <p class="testimonial-text">Отличное обучение!</p>
+                        <p class="testimonial-description">Обучение в SHAQ дало мне возможность значительно улучшить мои
+                            знания английского языка. Преподаватели отличные и материалы очень полезные.</p>
+                        <div class="testimonial-author">
+                            <img src="path/to/photo4.jpg" alt="Мария Иванова">
+                            <div class="author-info">
+                                <p class="author-name">Мария Иванова</p>
+                                <p class="testimonial-date">12.07.2023</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial">
+                        <p class="testimonial-text">Потрясающий курс!</p>
+                        <p class="testimonial-description">Я просто обожаю занятия. Очень много нового узнала, и мои
+                            знания стали на порядок выше. Рекомендую всем!</p>
+                        <div class="testimonial-author">
+                            <img src="path/to/photo5.jpg" alt="Александр Петров">
+                            <div class="author-info">
+                                <p class="author-name">Александр Петров</p>
+                                <p class="testimonial-date">05.06.2023</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial">
+                        <p class="testimonial-text">Невероятный опыт</p>
+                        <p class="testimonial-description">Прошла курс английского языка, и могу с уверенностью сказать,
+                            что это был лучший опыт изучения языка в моей жизни.</p>
+                        <div class="testimonial-author">
+                            <img src="path/to/photo6.jpg" alt="Виктория Смирнова">
+                            <div class="author-info">
+                                <p class="author-name">Виктория Смирнова</p>
+                                <p class="testimonial-date">28.05.2023</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial">
+                        <p class="testimonial-text">Замечательный курс</p>
+                        <p class="testimonial-description">Курс был очень полезным и интересным. Я достигла своих целей
+                            и даже больше. Спасибо преподавателям!</p>
+                        <div class="testimonial-author">
+                            <img src="path/to/photo7.jpg" alt="Сергей Кузнецов">
+                            <div class="author-info">
+                                <p class="author-name">Сергей Кузнецов</p>
+                                <p class="testimonial-date">15.04.2023</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial">
+                        <p class="testimonial-text">Очень доволен</p>
+                        <p class="testimonial-description">Сервис и качество обучения на высшем уровне. Очень рад, что
+                            выбрал этот курс. Спасибо всем!</p>
+                        <div class="testimonial-author">
+                            <img src="path/to/photo8.jpg" alt="Евгений Ковалев">
+                            <div class="author-info">
+                                <p class="author-name">Евгений Ковалев</p>
+                                <p class="testimonial-date">03.03.2023</p>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+            <!-- <button class="carousel-control next" onclick="nextTestimonial()">&#10095;</button> -->
+        </div>
+    </div>
+
+    <script>
+        let currentTestimonialIndex = 0;
+
+        function showTestimonial(index) {
+            const testimonials = document.querySelector('.testimonials');
+            const testimonialCount = document.querySelectorAll('.testimonial').length;
+            if (index >= testimonialCount / 3) {
+                currentTestimonialIndex = 0;
+            } else if (index < 0) {
+                currentTestimonialIndex = Math.floor(testimonialCount / 3) - 1;
+            } else {
+                currentTestimonialIndex = index;
+            }
+            testimonials.style.transform = `translateX(-${currentTestimonialIndex * 100}%)`;
+        }
+
+        function nextTestimonial() {
+            showTestimonial(currentTestimonialIndex + 1);
+        }
+
+        function prevTestimonial() {
+            showTestimonial(currentTestimonialIndex - 1);
+        }
+    </script>
+
+    <div class="faq-section">
+        <h2>Часто задаваемые вопросы</h2>
+        <div class="faq">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaqAnswer(0)">
+                    <h3>Какие курсы языковых уровней вы предлагаете?</h3>
+                    <span class="faq-toggle">&#10095;</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Мы предлагаем курсы для разных уровней: от начинающих до продвинутых. Также есть
+                        специализированные курсы для подготовки к экзаменам, бизнес-направленность и разговорные клубы.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaqAnswer(1)">
+                    <h3>Как проходят онлайн-занятия?</h3>
+                    <span class="faq-toggle">&#10095;</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Занятия проходят в формате видеоконференций с использованием современных образовательных
+                        платформ. Вы сможете взаимодействовать с преподавателем и другими студентами в реальном времени.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaqAnswer(2)">
+                    <h3>Какие материалы используются на курсах?</h3>
+                    <span class="faq-toggle">&#10095;</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Мы используем разнообразные материалы: учебники, видео, аудио, интерактивные упражнения и многое
+                        другое. Все материалы тщательно подобраны нашими преподавателями.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaqAnswer(3)">
+                    <h3>Какой у вас график занятий?</h3>
+                    <span class="faq-toggle">&#10095;</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Мы предлагаем гибкое расписание занятий, чтобы вы могли выбрать удобное для вас время. Вы можете
+                        заниматься утром, днем или вечером, в зависимости от вашего графика.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaqAnswer(4)">
+                    <h3>Как записаться на пробный урок?</h3>
+                    <span class="faq-toggle">&#10095;</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Для записи на пробный урок, пожалуйста, заполните форму на нашем сайте или свяжитесь с нами по
+                        телефону. Наш менеджер свяжется с вами для уточнения деталей.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleFaqAnswer(index) {
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems[index].classList.toggle('open');
+        }
+    </script>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-info">
+                <h3>SHAQ Language School</h3>
+                <p>Адрес: пр. Независимости 123, Минск, Беларусь</p>
+                <p>Телефон: +375 (29) 123-45-67</p>
+                <p>Email: info@shaqschool.com</p>
+            </div>
+            <div class="footer-links">
+                <h4>Полезные ссылки</h4>
+                <ul>
+                    <li><a href="#">Курсы</a></li>
+                    <li><a href="#">Преподаватели</a></li>
+                    <li><a href="#">Отзывы</a></li>
+                    <li><a href="#">О нас</a></li>
+                    <li><a href="#">Контакты</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h4>Мы в соцсетях</h4>
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">VK</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 SHAQ Language School. Все права защищены.</p>
+        </div>
+    </footer>
 </body>
 
 </html>

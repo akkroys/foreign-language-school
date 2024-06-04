@@ -94,7 +94,8 @@
                         if (data.success) {
                             location.reload();
                         } else {
-                            console.error("Ошибка при бронировании:", data.message);
+                            console.error("Ошибка при бронировании:", data.error);
+                            // console.log("данные какие-то", data);
                         }
                     })
                     .catch(err => {
